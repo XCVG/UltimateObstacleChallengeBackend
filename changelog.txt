@@ -1,4 +1,5 @@
 Newest changes at the top
 Format: MM/DD/YYYY HH:MM - comment  
 
+05/03/2016 13:08 - Method signatures for API
 05/02/2016 14:27 - Setup of codeigniter & rest server
