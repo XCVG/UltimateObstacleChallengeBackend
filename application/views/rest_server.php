@@ -108,6 +108,7 @@
             <li><a href="<?php echo site_url('api/example/users.html'); ?>">Users</a> - get it in HTML (users.html)</li>
             <li><a href="<?php echo site_url('api/example/users/format/html'); ?>">Users</a> - get it in HTML (users/format/html)</li>
             <li><a href="<?php echo site_url('api/example/users?format=html'); ?>">Users</a> - get it in HTML (users?format=html)</li>
+            <li><a href="<?php echo site_url('api/Uocb/result'); ?>">result</a> - </li>
         </ol>
 
     </div>
