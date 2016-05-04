@@ -31,42 +31,76 @@ class Uocb extends REST_Controller
             $this->methods['result_get']['limit'] = 500; // 500 requests per hour per user/key
             $this->methods['result_post']['limit'] = 100; // 100 requests per hour per user/key
             $this->methods['result_delete']['limit'] = 50; // 50 requests per hour per user/key
+            
+            $this->load->model('result'); // load the result model
+            
+            
+
         }
         
-        // todo: return a single result 
-        public function result_get() 
-        {
-            
-            if(!$this->get('result_id'))
-                {
-                    $this->response(NULL, 400);
-                }
-            
-            //todo: access model and retrieve result    
-                
-             $data = array('returned: '. $this->get('result_id')); // for debug, repeat result_id back 
-             
-             $this->response($data); // return data to the browser
-             
-            
-            
-            
-        }
+        // todo: return a single result, when are we ever going to a have a single result?
+//        public function result_get() 
+//        {
+//            
+//            if(!$this->get('result_id'))
+//                {
+//                    $this->response(NULL, 400);
+//                }
+//            
+//            //todo: access model and retrieve result   
+//            $data = $this->result->get_result();
+//                
+//             $data = array('returned: '. $this->get('result_id')); // for debug, repeat result_id back 
+//             
+//             $this->response($data); // return data to the browser
+//        }
+        
         // todo: return top results such as for the leaderboard
         public function results_get()
         {
            //student_id - such as for 'my best times'
-           //gender
-           //grade
+           // or
+           //gender and grade
+           //
            //period - daily, weekly (last 7 days), monthly(current month)
             
-            $data = array('returned:');
-             
-             $this->response($data); // return data to the browser
             
-            
+            if  ($this->get('student_id'))    
+            {
+                $studentID = (int)$this->get('student_id');
+                $results = $this->result->getResultsById($studentID);
+                $data = array(json_encode($results->result_array()));
+                $this->response($data); // return data to the browser
+                
+            } 
+            else 
+            {
+                if ($this->get('gender') && $this->get('grade'))
+                {
+                    $gender = $this->get('gender');
+                    $grade = $this->get('grade');
+                    $results = $this->result->getResultsByGenderGrade($gender, $grade);
+                    $data = array(json_encode($results->result_array()));
+                    $this->response($data); // return data to the browser
+                    
+                }
+                else
+                {
+                   $this->response(NULL, 400); 
+                }
+                
+                
+                
+                
+            }
+        
             
         }
+
+
+            
+            
+        
         
         // todo: add a result to the database
         public function result_post()
