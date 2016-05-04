@@ -4,21 +4,25 @@
  * @author jotiLalli
  */
 
-class Result extends MY_Model {
+class Result extends CI_Model {
 
 	// Constructor
 	public function __construct() {
 		parent::__construct();
+
 	}
 
 	//returns all results by student id
-	public function getResultsById(int $student_id) {
+	public function getResultsById($student_id) {
 
 		if ($student_id != null) {
+                    
 			$results = $this->db->get_where('result', array('student_id' => $student_id));
-
+                        
+                        //return 'test: ' . $student_id;
 			return $results;
 		}
+                
 	}
 
 	//returns all results by student id and date
@@ -44,7 +48,7 @@ class Result extends MY_Model {
 	}
 
 	//returns all results by student id and within the current month
-	public function getMonthlyResultsById(int $student_id) {
+	public function getMonthlyResultsById($student_id) {
 
 		if ($student_id != null) {
 
@@ -57,13 +61,22 @@ class Result extends MY_Model {
 	}
 
 	//returns all results by the gender and grade
-	public function getResultsByGenderGrade(char $gender, smallint $grade) {
-		if ($gender != null && $grade != null) {
-			$results = $this->db->get_where('result', array('grade' => $grade), array('gender' => $gender));
+	public function getResultsByGenderGrade($gender, $grade) 
+                {
+                    if ($gender != null && $grade != null) {
 
-			return $results;
-		}
-	}
+                        $this->db->select('*');
+                        $this->db->from('result');
+                        $this->db->join('student', 'result.student_id = student.student_id');
+                        $this->db->where(array('gender' => $gender, 'grade' => $grade));
+                        $query = $this->db->get();
+                        
+                        //$query = 'result: ' . $gender . ' ' . $grade;
+                        return $query;
+                    }
+  
+     
+                }
 
 	//returns results by gender and grade on a specific day
 	public function getDailyResultsByGenderGrade(char $gender, smallint $grade, date $date) {
