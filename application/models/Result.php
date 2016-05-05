@@ -128,18 +128,24 @@ class Result extends CI_Model {
 	}
 
 	//creates a new database entry in the result table
-	public function addResult() {
+	public function addResult($parameters) {
+            
+            $date = $parameters['date'];
+            $time = $parameters['time'];
+            $ranked = $parameters['ranked'];
+            $flagged = $parameters['flagged'];
+            $student_id = $parameters['student_id'];
 
 		$data = array(
 			'date' => $date,
 			'time' => $time,
 			'ranked' => $ranked,
 			'flagged' => $flagged,
-			'result_id' => $result_id,
+			//'result_id' => $result_id, auto-assigned
 			'student_id' => $student_id
 		);
 
-		$this->db->insert('result', $data);
+		return $this->db->insert('result', $data);
 	}
 
 }
