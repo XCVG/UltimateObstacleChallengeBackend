@@ -147,5 +147,13 @@ class Result extends CI_Model {
 
 		return $this->db->insert('result', $data);
 	}
+        
+        public function deleteRecord($result_id) {
+            if ($result_id > 0) {
+            $this->db->where('result_id', $result_id);
+            $this->db->delete('result');
+           return array('affected_rows' => $this->db->affected_rows());
+        }
+    }
 
 }

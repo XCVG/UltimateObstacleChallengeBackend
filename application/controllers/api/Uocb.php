@@ -145,22 +145,27 @@ class Uocb extends REST_Controller
             
             // todo: Validate administration rights
             
-            $result_id = (int) $this->get('result_id');
+            $result_id = $this->input->post_get('result_id');
 
             // Validate the result_id.
             if ($result_id <= 0)
             {
-                // Set the response and exit
-                $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST); // BAD_REQUEST (400) being the HTTP response code
+                $message = 'result_id: ' .$result_id; 
+                $this->response($message, REST_Controller::HTTP_BAD_REQUEST); // BAD_REQUEST (400) being the HTTP response code
             }
+            else 
+                {
 
-            // $this->some_model->delete_something($id);
-            $message = [
-                'result_id' => $result_id,
-                'message' => 'Test Deleted the result'
-            ];
-
-            $this->response($message, REST_Controller::HTTP_NO_CONTENT); // NO_CONTENT (204) being the HTTP response code
+                    $response = $this->result->deleteRecord($result_id);
+                    if ($response['affected_rows'] > 0)
+                        {
+                            $message = 'Deleted: ' . $response['affected_rows'] . ' ' . $result_id;
+                        }
+                        else {
+                            $message = 'Failed to Delete: ' . $response['affected_rows'] . ' ' . $result_id;
+                         }
+                    $this->response($message, REST_Controller::HTTP_OK); 
+            }
         }
     
 }
