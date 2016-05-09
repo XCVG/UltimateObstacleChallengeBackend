@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @author jotiLalli
+ * @author jotiLalli, Richard Gosse
  */
 
 class Result extends CI_Model {
@@ -68,6 +68,10 @@ class Result extends CI_Model {
                 $student_grade = $parameters['student_grade'];
                 $school_name = $parameters['school_name'];
 
+                if ($student_gender == 'M' | $student_gender == 'F'
+                        )
+                {
+                
 		$data = array(
 			'date' => $date,
 			'time' => $time,
@@ -80,6 +84,10 @@ class Result extends CI_Model {
 		);
 
 		return $this->db->insert('result', $data);
+                }
+                else {
+                    return FALSE;
+                }
 	}
 
 	public function deleteResult($result_id) {

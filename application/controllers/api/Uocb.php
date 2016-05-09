@@ -13,7 +13,7 @@ require APPPATH . '/libraries/REST_Controller.php';
  */
 
 /**
- * Description of Uocb
+ * Uocb provides a Restful Service 
  *
  * @author Richard Gosse
  */
@@ -21,6 +21,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 class Uocb extends REST_Controller
 {
+   
     function __construct()
         {
             // Construct the parent class
@@ -38,46 +39,51 @@ class Uocb extends REST_Controller
         {
            switch ($period) {
                case "daily":
-                   $where = $this->input->get();
+                   $where = $this->validateWhere();
                     $results = $this->result->getDailyResults($where);
                     $this->response($results); // return data to the browser
                    break;
                case "weekly":
-                   $where = $this->input->get();
+                   $where = $this->validateWhere();
                     $results = $this->result->getWeeklyResults($where);
                     $this->response($results); // return data to the browser
                    break;
                case "monthly":
-                   $where = $this->input->get();
+                   $where = $this->validateWhere();
                     $results = $this->result->getMonthlyResults($where);
                     $this->response($results); // return data to the browser
                    break;
                default:
-                    $where = $this->input->get();
+                    $where = $this->validateWhere();
                     $results = $this->result->getResults($where);
                     $this->response($results); // return data to the browser  
            }
             }
-                
-        
 
         public function result_post()
         {
             if (
-                  $this->input->post_get('date') &&
-                  $this->input->post_get('time') &&
-                  $this->input->post_get('ranked') &&
-                  $this->input->post_get('flagged') &&
+                  $this->validateDate($this->input->post_get('date')) &&
+                  $this->validateTime($this->input->post_get('time')) &&
                   $this->input->post_get('student_name') &&
                   $this->input->post_get('student_gender') &&
                   $this->input->post_get('student_grade') &&
                   $this->input->post_get('school_name'))         
             {
+
+                //if client has provided an auth password, create result as ranked
+                if ($this->input->post_get('password') == '12345') {
+                    $ranked = TRUE;
+                }
+                else {
+                    $ranked = FALSE;
+                }
+                
                 $data = array(
                     'date' => $this->input->post_get('date'),
                     'time' => $this->input->post_get('time'),
-                    'ranked' => $this->input->post_get('ranked'),
-                    'flagged' => $this->input->post_get('flagged'),
+                    'ranked' => $ranked,
+                    'flagged' => FALSE,
                     'student_name' => $this->input->post_get('student_name'),
                     'student_gender' => $this->input->post_get('student_gender'),
                     'student_grade' => $this->input->post_get('student_grade'),
@@ -86,7 +92,11 @@ class Uocb extends REST_Controller
                 $result = $this->result->addResult($data); 
                 if ($result)
                 {
-                    $this->set_response($result, REST_Controller::HTTP_CREATED); // CREATED (201) being the HTTP response code
+                    $this->set_response(NULL, REST_Controller::HTTP_CREATED); // CREATED (201) being the HTTP response code
+                }
+                else 
+                {
+                    $this->set_response(NULL, REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
             else
@@ -100,8 +110,13 @@ class Uocb extends REST_Controller
         public function result_delete()
         {
             
-            // todo: Validate administration rights
-            
+            if ($this->input->post_get('password') != '12345')
+            {
+                $this->response(NULL, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+            else
+            {
+ 
             $result_id = $this->input->post_get('result_id');
 
             // Validate the result_id
@@ -115,13 +130,41 @@ class Uocb extends REST_Controller
                     $response = $this->result->deleteResult($result_id);
                     if ($response['affected_rows'] > 0)
                         {
-                            $message = 'Deleted: ' . $response['affected_rows'] . ' ' . $result_id;
+                            $message = 'Deleted: ' . $response['affected_rows'] . ' affected row.';
+                            $this->response($message, REST_Controller::HTTP_OK); 
                         }
                         else {
-                            $message = 'Failed to Delete: ' . $response['affected_rows'] . ' ' . $result_id;
+                            $message = 'Failed to Delete: ' . $response['affected_rows'] . ' affected rows.';
+                            $this->response($message, REST_Controller::HTTP_BAD_REQUEST); 
                          }
-                    $this->response($message, REST_Controller::HTTP_OK); 
+                }
             }
         }
+        
+        function validateDate($date)
+        {
+            $d = DateTime::createFromFormat('Y-m-d', $date);
+            return $d && $d->format('Y-m-d') === $date;
+        }
+        
+        function validateTime($time)
+        {
+            return is_numeric($time);
+        }
+        
+        
+        // validate parameter 'ranked' as being true or false for mysql
+        function validateWhere() 
+        {
+            $where = $this->input->get();
+                   if ($where['ranked']) 
+                   {
+                       $where['ranked'] = filter_var($where['ranked'], FILTER_VALIDATE_BOOLEAN);
+                   }
+             return $where;
+        }
     
+
+                    
+        
 }
