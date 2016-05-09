@@ -157,7 +157,7 @@ class Uocb extends REST_Controller
         function validateWhere() 
         {
             $where = $this->input->get();
-                   if ($where['ranked']) 
+                   if ($this->input->get('ranked')) 
                    {
                        $where['ranked'] = filter_var($where['ranked'], FILTER_VALIDATE_BOOLEAN);
                    }

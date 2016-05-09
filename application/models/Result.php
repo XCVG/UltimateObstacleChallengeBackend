@@ -14,8 +14,14 @@ class Result extends CI_Model {
 	//returns all results by the gender and grade
 	public function getResults($parameters)
                 {
-            $query = $this->db->get_where('result', $parameters);
-            return $query->result_array();
+            
+            $this->db->select('*');
+            $this->db->from('result');
+            $this->db->where($parameters);
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
+            $result = $this->db->get();
+            return $result->result_array();
 		
 	}
         
@@ -25,6 +31,8 @@ class Result extends CI_Model {
             $this->db->from('result');
             $this->db->where($parameters);
             $this->db->where('date',Date('Y-m-d'));
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
             $result = $this->db->get();
             return $result->result_array();;
             
@@ -38,6 +46,8 @@ class Result extends CI_Model {
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
             $result = $this->db->get();
             return $result->result_array();;
             
@@ -51,6 +61,8 @@ class Result extends CI_Model {
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
             $result = $this->db->get();
             return $result->result_array();;
         }
