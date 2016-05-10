@@ -3,6 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
+| API Admin Password
+|--------------------------------------------------------------------------
+|
+| This is the password used for authenticating when a ranked entry is
+| POSTed or when an entry is deleted. It should be the same as the app
+| admin password unless this is changed in the future.
+|
+*/
+define('UOCBPASSWORD', '12345');
+
+/*
+|--------------------------------------------------------------------------
 | Display Debug backtrace
 |--------------------------------------------------------------------------
 |
