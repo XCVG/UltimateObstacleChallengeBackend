@@ -1,132 +1,113 @@
 <?php
 
 /*
- * @author jotiLalli
+ * @author jotiLalli, Richard Gosse
  */
 
-class Result extends MY_Model {
+class Result extends CI_Model {
 
 	// Constructor
 	public function __construct() {
 		parent::__construct();
 	}
-
-	//returns all results by student id
-	public function getResultsById(int $student_id) {
-
-		if ($student_id != null) {
-			$results = $this->db->get_where('result', array('student_id' => $student_id));
-
-			return $results;
-		}
-	}
-
-	//returns all results by student id and date
-	public function getDailyResultsById(int $student_id, date $date) {
-
-		if ($student_id != null && $date != null) {
-			$results = $this->db->get_where('result', array('student_id' => $student_id, 'date' => $date));
-			return $results;
-		}
-	}
-
-	//returns all results by student id and within a week
-	public function getWeeklyResultsById(int $student_id) {
-
-		if ($student_id != null) {
-
-			$this->db->where('student_id' == $student_id);
-			$this->db->where('date >=', date(y - m - d));
-			$this->db->where('date <=', strtotime('-7 day' . date(y - m - d)));
-
-			return $this->db->get('result');
-		}
-	}
-
-	//returns all results by student id and within the current month
-	public function getMonthlyResultsById(int $student_id) {
-
-		if ($student_id != null) {
-
-			$this->db->where('student_id' == $student_id);
-			$this->db->where('date >=', strtotime('first day of this month' . date(y - m - d)));
-			$this->db->where('date <=', strtotime('last day of this month' . date(y - m - d)));
-
-			return $this->db->get('result');
-		}
-	}
-
+        
 	//returns all results by the gender and grade
-	public function getResultsByGenderGrade(char $gender, smallint $grade) {
-		if ($gender != null && $grade != null) {
-			$results = $this->db->get_where('result', array('grade' => $grade), array('gender' => $gender));
-
-			return $results;
-		}
+	public function getResults($parameters)
+                {
+            
+            $this->db->select('*');
+            $this->db->from('result');
+            $this->db->where($parameters);
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
+            $result = $this->db->get();
+            return $result->result_array();
+		
 	}
+        
+        public function getDailyResults($parameters) 
+                {
+            $this->db->select('*');
+            $this->db->from('result');
+            $this->db->where($parameters);
+            $this->db->where('date',Date('Y-m-d'));
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
+            $result = $this->db->get();
+            return $result->result_array();;
+            
+        }
+        
+        public function getWeeklyResults($parameters) 
+                {
+            
+            $this->db->select('*');
+            $this->db->from('result');
+            $this->db->where($parameters);
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
+            $result = $this->db->get();
+            return $result->result_array();;
+            
+  
+        }
+        
+        public function getMonthlyResults($parameters) 
+                {
+            $this->db->select('*');
+            $this->db->from('result');
+            $this->db->where($parameters);
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
+            $this->db->order_by('time', "asc");
+            $this->db->limit(10);
+            $result = $this->db->get();
+            return $result->result_array();;
+        }
 
-	//returns results by gender and grade on a specific day
-	public function getDailyResultsByGenderGrade(char $gender, smallint $grade, date $date) {
-
-		if ($gender == 'm' || $gender == 'f' && $grade != null && $date != null) {
-			$results = $this->db->get_where('result', array('gender' => $gender, 'grade' => $grade, 'date' => $date));
-			return $results;
-		}
-	}
-
-	//returns results by gender and grade in the week
-	public function getWeeklyResultsByGenderGrade(char $gender, smallint $grade) {
-
-		if ($gender == 'm' || $gender == 'f' && $grade != null) {
-
-			$this->db->where('gender' == $gender);
-			$this->db->where('grade' == $grade);
-			$this->db->where('date >=', date(y - m - d));
-			$this->db->where('date <=', strtotime('-7 day' . date(y - m - d)));
-
-			return $this->db->get('result');
-		}
-	}
-
-	//returns results by gender and grade in the month
-	public function getMonthlyResultsByGenderGrade(char $gender, smallint $grade) {
-
-		if ($gender == 'm' || $gender == 'f' && $grade != null) {
-
-			$this->db->where('gender' == $gender);
-			$this->db->where('grade' == $grade);
-			$this->db->where('date >=', strtotime('first day of this month' . date(y - m - d)));
-			$this->db->where('date <=', strtotime('last day of this month' . date(y - m - d)));
-
-			return $this->db->get('result');
-		}
-	}
-
-	//creates a new database entry in the student table
-	public function addStudent() {
-		$data = array(
-			'name' => $name,
-			'gender' => $gender,
-			'grade' => $grade,
-			'student_id' => $student_id
-		);
-
-		$this->db->insert('student', $data);
-	}
 
 	//creates a new database entry in the result table
-	public function addResult() {
+	public function addResult($parameters) {
 
+		$date = $parameters['date'];
+		$time = $parameters['time'];
+		$ranked = $parameters['ranked'];
+		$flagged = $parameters['flagged'];
+		$student_name = $parameters['student_name'];
+                $student_gender = $parameters['student_gender'];
+                $student_grade = $parameters['student_grade'];
+                $school_name = $parameters['school_name'];
+
+                if ($student_gender == 'M' | $student_gender == 'F'
+                        )
+                {
+                
 		$data = array(
 			'date' => $date,
 			'time' => $time,
 			'ranked' => $ranked,
 			'flagged' => $flagged,
-			'result_id' => $result_id,
-			'student_id' => $student_id
+			'student_name' => $student_name,
+                        'student_gender' => $student_gender,
+                        'student_grade' => $student_grade,
+                        'school_name' => $school_name
 		);
 
-		$this->db->insert('result', $data);
+		return $this->db->insert('result', $data);
+                }
+                else {
+                    return FALSE;
+                }
+	}
+
+	public function deleteResult($result_id) {
+		if ($result_id > 0) {
+			$this->db->where('result_id', $result_id);
+			$this->db->delete('result');
+			return array('affected_rows' => $this->db->affected_rows());
+		}
 	}
 
 }

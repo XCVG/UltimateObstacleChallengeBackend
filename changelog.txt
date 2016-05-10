@@ -1,5 +1,10 @@
 Newest changes at the top
 Format: MM/DD/YYYY HH:MM - comment  
 
+05/10/2016 10:30 - Cleaned up a few things 
+05/05/2016 15:20 Adjusted result.php: created arrays... 
+05/05/2016 15:06 API result_delete
+05/05/2016 12:21 API result_post
+05/04/2016 12:26 - API result_get
 05/03/2016 13:08 - Method signatures for API
 05/02/2016 14:27 - Setup of codeigniter & rest server
