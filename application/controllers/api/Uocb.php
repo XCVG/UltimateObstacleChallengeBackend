@@ -72,7 +72,7 @@ class Uocb extends REST_Controller
             {
 
                 //if client has provided an auth password, create result as ranked
-                if ($this->input->post_get('password') == '12345') {
+                if ($this->input->post_get('password') == UOCBPASSWORD) {
                     $ranked = TRUE;
                 }
                 else {
@@ -110,7 +110,7 @@ class Uocb extends REST_Controller
         public function result_delete()
         {
             
-            if ($this->input->post_get('password') != '12345')
+            if ($this->input->post_get('password') != UOCBPASSWORD)
             {
                 $this->response(NULL, REST_Controller::HTTP_UNAUTHORIZED);
             }
