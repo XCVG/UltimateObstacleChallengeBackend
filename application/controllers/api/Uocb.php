@@ -53,6 +53,11 @@ class Uocb extends REST_Controller
                     $results = $this->result->getMonthlyResults($where);
                     $this->response($results); // return data to the browser
                    break;
+               case "alltime":
+                   $where = $this->validateWhere();
+                    $results = $this->result->getAlltimeResults($where);
+                    $this->response($results); // return data to the browser
+                   break;
                default:
                     $where = $this->validateWhere();
                     $results = $this->result->getResults($where);
