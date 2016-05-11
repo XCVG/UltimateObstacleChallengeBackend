@@ -17,6 +17,11 @@ class Result extends CI_Model {
             
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
             $this->db->where($parameters);
             $this->db->order_by('time', "asc");
             //$this->db->limit(20);
@@ -30,6 +35,11 @@ class Result extends CI_Model {
             
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->order_by('time', "asc");
             $this->db->limit(20);
@@ -42,6 +52,11 @@ class Result extends CI_Model {
                 {
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date',Date('Y-m-d'));
             $this->db->order_by('time', "asc");
@@ -56,6 +71,11 @@ class Result extends CI_Model {
             
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
@@ -71,6 +91,11 @@ class Result extends CI_Model {
                 {
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
