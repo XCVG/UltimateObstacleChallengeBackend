@@ -14,25 +14,34 @@ class Result extends CI_Model {
         //returns a count of all results
         public function countResults()
         {
-            
+            $this->db->from('result');
+            return $this->db->count_all_results();
         }
         
         //returns a count of all results from past day
         public function countDailyResults()
         {
-            
+            $this->db->from('result');
+            $this->db->where('date',Date('Y-m-d'));
+            return $this->db->count_all_results();
         }
         
         //returns a count of all results from past week
         public function countWeeklyResults()
         {
-            
+            $this->db->from('result');
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
+            return $this->db->count_all_results();
         }
         
         //returns a count of all results from past month
         public function countMonthlyResults()
         {
-            
+            $this->db->from('result');
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
+            return $this->db->count_all_results();
         }
         
 	//returns all results by the gender and grade

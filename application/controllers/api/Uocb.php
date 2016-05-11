@@ -39,16 +39,16 @@ class Uocb extends REST_Controller
         {
             switch ($period) {
                case "daily":
-                   $this->response("25");
+                   $this->response($this->result->countDailyResults());
                    break;
                case "weekly":
-                   $this->response("100");
+                   $this->response($this->result->countWeeklyResults());
                    break;
                case "monthly":
-                   $this->response("250");
+                   $this->response($this->result->countMonthlyResults());
                    break;
                default:
-                    $this->response("1000");
+                    $this->response($this->result->countResults());
            }
         }
 
