@@ -11,6 +11,30 @@ class Result extends CI_Model {
 		parent::__construct();
 	}
         
+        //returns a count of all results
+        public function countResults()
+        {
+            
+        }
+        
+        //returns a count of all results from past day
+        public function countDailyResults()
+        {
+            
+        }
+        
+        //returns a count of all results from past week
+        public function countWeeklyResults()
+        {
+            
+        }
+        
+        //returns a count of all results from past month
+        public function countMonthlyResults()
+        {
+            
+        }
+        
 	//returns all results by the gender and grade
 	public function getResults($parameters)
                 {
