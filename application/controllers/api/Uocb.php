@@ -37,18 +37,20 @@ class Uocb extends REST_Controller
         
         public function count_get($period = null)
         {
+            $where = $this->validateWhere();
+            
             switch ($period) {
                case "daily":
-                   $this->response($this->result->countDailyResults());
+                   $this->response($this->result->countDailyResults($where));
                    break;
                case "weekly":
-                   $this->response($this->result->countWeeklyResults());
+                   $this->response($this->result->countWeeklyResults($where));
                    break;
                case "monthly":
-                   $this->response($this->result->countMonthlyResults());
+                   $this->response($this->result->countMonthlyResults($where));
                    break;
                default:
-                    $this->response($this->result->countResults());
+                    $this->response($this->result->countResults($where));
            }
         }
 

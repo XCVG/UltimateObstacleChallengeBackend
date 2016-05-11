@@ -12,33 +12,57 @@ class Result extends CI_Model {
 	}
         
         //returns a count of all results
-        public function countResults()
+        public function countResults($parameters)
         {
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
             return $this->db->count_all_results();
         }
         
         //returns a count of all results from past day
-        public function countDailyResults()
+        public function countDailyResults($parameters)
         {
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
             $this->db->where('date',Date('Y-m-d'));
             return $this->db->count_all_results();
         }
         
         //returns a count of all results from past week
-        public function countWeeklyResults()
+        public function countWeeklyResults($parameters)
         {
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
             return $this->db->count_all_results();
         }
         
         //returns a count of all results from past month
-        public function countMonthlyResults()
+        public function countMonthlyResults($parameters)
         {
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
             return $this->db->count_all_results();
