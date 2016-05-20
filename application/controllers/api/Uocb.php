@@ -34,6 +34,25 @@ class Uocb extends REST_Controller
             $this->methods['result_delete']['limit'] = 50; // 50 requests per hour per user/key
             $this->load->model('result'); // load the result model
         }
+        
+        public function count_get($period = null)
+        {
+            $where = $this->validateWhere();
+            
+            switch ($period) {
+               case "daily":
+                   $this->response($this->result->countDailyResults($where));
+                   break;
+               case "weekly":
+                   $this->response($this->result->countWeeklyResults($where));
+                   break;
+               case "monthly":
+                   $this->response($this->result->countMonthlyResults($where));
+                   break;
+               default:
+                    $this->response($this->result->countResults($where));
+           }
+        }
 
         public function results_get($period = null)
         {
@@ -51,6 +70,11 @@ class Uocb extends REST_Controller
                case "monthly":
                    $where = $this->validateWhere();
                     $results = $this->result->getMonthlyResults($where);
+                    $this->response($results); // return data to the browser
+                   break;
+               case "alltime":
+                   $where = $this->validateWhere();
+                    $results = $this->result->getAlltimeResults($where);
                     $this->response($results); // return data to the browser
                    break;
                default:

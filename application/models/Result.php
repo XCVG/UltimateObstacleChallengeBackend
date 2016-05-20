@@ -11,15 +11,95 @@ class Result extends CI_Model {
 		parent::__construct();
 	}
         
+        //returns a count of all results
+        public function countResults($parameters)
+        {
+            $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
+            return $this->db->count_all_results();
+        }
+        
+        //returns a count of all results from past day
+        public function countDailyResults($parameters)
+        {
+            $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
+            $this->db->where('date',Date('Y-m-d'));
+            return $this->db->count_all_results();
+        }
+        
+        //returns a count of all results from past week
+        public function countWeeklyResults($parameters)
+        {
+            $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
+            return $this->db->count_all_results();
+        }
+        
+        //returns a count of all results from past month
+        public function countMonthlyResults($parameters)
+        {
+            $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
+            $this->db->where($parameters);
+            $this->db->where('date <=',Date('Y-m-d'));
+            $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
+            return $this->db->count_all_results();
+        }
+        
 	//returns all results by the gender and grade
 	public function getResults($parameters)
                 {
             
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            }            
             $this->db->where($parameters);
             $this->db->order_by('time', "asc");
-            $this->db->limit(10);
+            //$this->db->limit(20);
+            $result = $this->db->get();
+            return $result->result_array();
+		
+	}
+        
+        public function getAlltimeResults($parameters)
+                {
+            
+            $this->db->select('*');
+            $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
+            $this->db->where($parameters);
+            $this->db->order_by('time', "asc");
+            $this->db->limit(20);
             $result = $this->db->get();
             return $result->result_array();
 		
@@ -29,10 +109,15 @@ class Result extends CI_Model {
                 {
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date',Date('Y-m-d'));
             $this->db->order_by('time', "asc");
-            $this->db->limit(10);
+            $this->db->limit(20);
             $result = $this->db->get();
             return $result->result_array();;
             
@@ -43,11 +128,16 @@ class Result extends CI_Model {
             
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('-7 days')));
             $this->db->order_by('time', "asc");
-            $this->db->limit(10);
+            $this->db->limit(20);
             $result = $this->db->get();
             return $result->result_array();;
             
@@ -58,11 +148,16 @@ class Result extends CI_Model {
                 {
             $this->db->select('*');
             $this->db->from('result');
+            if(!empty($parameters['school_name']))
+            {
+                $this->db->like('LOWER(school_name)',strtolower($parameters['school_name']),'after');
+                unset($parameters['school_name']);
+            } 
             $this->db->where($parameters);
             $this->db->where('date <=',Date('Y-m-d'));
             $this->db->where('date >=',Date('Y-m-d', strtotime('first day of this month'))); 
             $this->db->order_by('time', "asc");
-            $this->db->limit(10);
+            $this->db->limit(20);
             $result = $this->db->get();
             return $result->result_array();;
         }
